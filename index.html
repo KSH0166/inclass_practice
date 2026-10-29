@@ -34,12 +34,14 @@ h2{margin:0 0 8px;font-size:24px}h3{margin:0 0 8px}
 .primary{background:var(--orange);box-shadow:0 3px 0 #e5a34a}.green{background:var(--green)}.pink{background:var(--pink)}.purple{background:var(--purple)}.white{background:white;border:1px solid var(--line)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.row .btn{flex:1}
 .tag{background:#eee7ff;border-radius:20px;padding:6px 10px;font-size:12px;font-weight:bold}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .passage{background:#fff9e9;border:1px solid #efdfbd;border-radius:16px;padding:17px;line-height:1.95;font-size:15px}
 .passage strong{color:#b06e23}
 .glossary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
-.glossary-item{background:white;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;line-height:1.6}
-.glossary-item strong{display:block;font-size:15px;color:#805a35}
+.glossary-item{background:white;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;line-height:1.6}
+.glossary-item strong{display:block;font-size:16px;color:#805a35}
+.pronounce-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.pronounce{background:#f0ecff;border:1px solid #dcd0ff;border-radius:10px;padding:7px 10px;font-size:12px;font-weight:bold;color:#57468a}
+.pronounce.us{background:#e8f5ff;border-color:#c8e6ff;color:#285b82}
 .counter{text-align:center;color:var(--muted);font-weight:bold;margin:12px}
 .flash{min-height:250px;background:linear-gradient(150deg,#fffdf6,#fff1d3);border:2px solid var(--line);border-radius:19px;display:grid;place-items:center;text-align:center;padding:25px;overflow-wrap:anywhere}
 .big{font-size:clamp(25px,5vw,36px);font-weight:bold}
@@ -93,11 +95,13 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 </section>
 
 <section class="card" id="reading">
-  <div class="section-head"><div><h2>📚 Read the Story First!</h2><p class="muted">먼저 지문을 읽고 오늘 배울 표현 6개를 확인해 봐.</p></div><span class="tag">TODAY'S STORY</span></div>
+  <div class="section-head"><div><h2>📚 Read the Story First!</h2><p class="muted">먼저 지문을 읽고 오늘 배울 표현 6개와 발음을 확인해 봐.</p></div><span class="tag">TODAY'S STORY</span></div>
   <div class="passage">
     Our class is preparing for the school festival. Mina is <strong>in charge of</strong> the English booth. She asked everyone to <strong>take part in</strong> a short quiz game. At first, the team could not <strong>figure out</strong> how to make the activity interesting. They decided to <strong>work on</strong> a mystery theme. After testing the game, they decided to <strong>cut down on</strong> long instructions. They hope these changes will <strong>make a difference</strong> for the students who visit the booth.
   </div>
-  <h3 style="margin-top:18px">🌼 Today's 6 Expressions</h3><div class="glossary" id="glossary"></div>
+  <h3 style="margin-top:18px">🌼 Today's 6 Expressions</h3>
+  <p class="muted">각 표현 아래의 버튼을 눌러 영국식 또는 미국식 발음을 들어 봐.</p>
+  <div class="glossary" id="glossary"></div>
   <div class="row"><button class="btn primary" onclick="showStage(0)">Start Learning →</button><button class="btn white" onclick="showStage(1)">Go to Practice</button><button class="btn white" onclick="showStage(2)">Take the Challenge</button></div>
 </section>
 
@@ -108,7 +112,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 </nav>
 
 <section class="card stage" id="stage0">
-  <div class="section-head"><div><h2>📖 Flashcard Learning</h2><p class="muted">뜻을 확인한 뒤, 아는 표현과 모르는 표현을 구분해 줘.</p></div><span class="tag">STAGE 1</span></div>
+  <div class="section-head"><div><h2>📖 Flashcard Learning</h2><p class="muted">발음을 듣고 뜻을 떠올린 뒤, 아는 표현과 모르는 표현을 구분해 줘.</p></div><span class="tag">STAGE 1</span></div>
   <div class="setting">
     <label>Card Direction</label>
     <div class="row" style="margin-top:6px"><button id="dirEn" class="btn primary" onclick="setFlashDirection('en')">English → Korean</button><button id="dirKo" class="btn white" onclick="setFlashDirection('ko')">Korean → English</button></div>
@@ -116,7 +120,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
   <div id="flashSetup"><p class="muted">6개 표현을 모두 학습해 봐. 모르는 표현은 마지막에 다시 볼 수 있어.</p><button class="btn primary" onclick="startFlash()">Start Flashcards 🌟</button></div>
   <div id="flashArea" class="hidden">
     <div class="counter" id="flashCounter"></div>
-    <div class="flash"><div><div class="big" id="flashFront"></div><div id="flashBack" class="flash-answer hidden"><div class="big" id="flashMeaning"></div><p id="flashExample"></p><p class="muted" id="flashExampleKo"></p></div><p class="muted" id="flashPrompt">뜻을 먼저 생각해 봐!</p></div></div>
+    <div class="flash"><div>
+      <div class="big" id="flashFront"></div>
+      <div id="flashPronunciation" class="pronounce-row" style="justify-content:center"></div>
+      <div id="flashBack" class="flash-answer hidden"><div class="big" id="flashMeaning"></div><p id="flashExample"></p><p class="muted" id="flashExampleKo"></p></div>
+      <p class="muted" id="flashPrompt">뜻을 먼저 생각해 봐!</p>
+    </div></div>
     <div class="row"><button class="btn purple" onclick="revealFlash()">👀 뜻 보기</button><button class="btn pink" onclick="markFlash(false)">🙈 몰라요</button><button class="btn green" onclick="markFlash(true)">✨ 알아요</button></div>
     <div class="row"><button class="btn white" onclick="previousFlash()">← 이전 카드</button><button class="btn white" onclick="stopFlash()">끝내기</button></div>
   </div>
@@ -127,13 +136,13 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
   <div class="section-head"><div><h2>✏️ Practice Zone</h2><p class="muted">6개 표현을 연습해 봐. 틀려도 힌트를 보고 다시 도전할 수 있어.</p></div><span class="tag">STAGE 2</span></div>
   <div class="setting"><label>Practice Type</label><div class="row" style="margin-top:6px"><button id="pmcq" class="btn primary" onclick="setPracticeMode('mcq')">객관식</button><button id="ptype" class="btn white" onclick="setPracticeMode('type')">주관식</button><button id="pmatch" class="btn white" onclick="setPracticeMode('match')">매칭</button></div></div>
   <div class="setting"><label>Question Direction</label><div class="row" style="margin-top:6px"><button id="pdirEn" class="btn primary" onclick="setPracticeDirection('en')">영어 → 한국어</button><button id="pdirKo" class="btn white" onclick="setPracticeDirection('ko')">한국어 → 영어</button></div></div>
-  <div id="practiceSetup" style="margin-top:14px"><p class="muted">문제 수는 고정이야. 오늘의 6개 표현을 모두 연습해!</p><button class="btn primary" onclick="startPractice()">Start Practice 🚀</button></div>
+  <div id="practiceSetup" style="margin-top:14px"><p class="muted">오늘의 6개 표현을 모두 연습해!</p><button class="btn primary" onclick="startPractice()">Start Practice 🚀</button></div>
   <div id="practiceArea" class="hidden"><div class="counter" id="practiceCounter"></div><div id="practiceQuestion"></div><div id="practiceFeedback" aria-live="polite"></div><div id="practiceControls" class="row"></div><div class="row"><button class="btn white" onclick="stopPractice()">연습 설정으로 돌아가기</button></div></div>
 </section>
 
 <section class="card stage hidden" id="stage2">
   <div class="section-head"><div><h2>🏆 Final Challenge</h2><p class="muted">객관식, 주관식, 문장 빈칸 문제가 섞여 있어.</p></div><span class="tag">STAGE 3</span></div>
-  <p class="muted">6개 표현을 한 번씩 테스트해. 정답은 +50코인, 힌트는 사용할 때마다 −10코인이야.</p>
+  <p class="muted">6개 표현을 한 번씩 테스트해. 정답은 +50코인, 힌트나 정답 보기는 사용할 때마다 −10코인이야.</p>
   <div id="testSetup"><div style="font-size:60px">🎯</div><button class="btn primary" onclick="startTest()">Start Final Challenge!</button></div>
   <div id="testArea" class="hidden"><div class="counter" id="testCounter"></div><div id="testQuestion"></div><div id="testFeedback" aria-live="polite"></div><div id="testControls" class="row"></div><div class="row"><button class="btn white" onclick="stopTest()">실전 설정으로 돌아가기</button></div></div>
   <div id="testResult" class="hidden"><div class="result"><div class="emoji" id="resultEmoji">🎉</div><h2>Challenge Complete!</h2><div class="score" id="resultScore">0 / 6</div><p id="resultText"></p><p>🪙 이번에 획득한 코인: <b id="earnedCoins">0</b></p></div><h3 style="margin-top:18px">📝 Review Your Answers</h3><div id="testReview"></div><div class="row"><button class="btn primary" onclick="startTest()">Try Again</button><button class="btn purple" onclick="openShop()">Spend Your Coins 🏡</button></div></div>
@@ -175,8 +184,34 @@ let activeStage=0,flashDirection="en",flashDeck=[],flashIndex=0,flashKnown={};
 let practiceMode="mcq",practiceDirection="en",practiceDeck=[],practiceIndex=0,practiceRound=null;
 let testDeck=[],testIndex=0,testRound=null,testCorrect=0,testEarned=0,testReviews=[];
 let toastTimer;
+
+/* Accent-aware pronunciation */
+function speakExpression(text,accent){
+ if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){
+  toast("이 브라우저에서는 음성 읽기를 지원하지 않아. 크롬이나 엣지에서 열어 봐!");return;
+ }
+ window.speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance(text);
+ utterance.lang=accent==="uk"?"en-GB":"en-US";
+ utterance.rate=0.82;
+ const voices=window.speechSynthesis.getVoices();
+ const preferred=voices.filter(v=>accent==="uk"?v.lang.toLowerCase().startsWith("en-gb"):v.lang.toLowerCase().startsWith("en-us"));
+ const english=voices.filter(v=>v.lang.toLowerCase().startsWith("en"));
+ if(preferred.length)utterance.voice=preferred[0];
+ else if(english.length)utterance.voice=english[0];
+ else toast("설치된 영어 음성이 없어 기기의 기본 음성으로 재생할게.");
+ window.speechSynthesis.speak(utterance);
+}
+function pronunciationButtons(word,center=false){
+ const wrap=document.createElement("div");
+ wrap.className="pronounce-row"+(center?" center":"");
+ wrap.innerHTML=`<button class="pronounce" type="button" aria-label="Hear ${word.en} in British English" onclick="speakExpression('${word.en}','uk')">🇬🇧 UK Audio</button><button class="pronounce us" type="button" aria-label="Hear ${word.en} in American English" onclick="speakExpression('${word.en}','us')">🇺🇸 US Audio</button>`;
+ return wrap;
+}
+if("speechSynthesis" in window)window.speechSynthesis.getVoices();
+
 function save(){try{localStorage.setItem("capybaraLifeMakeover",JSON.stringify(state));}catch(e){}}
-function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2300);}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2500);}
 function earn(n){state.coins+=n;save();updatePet();}
 function spend(n){if(state.coins<n){toast("코인이 부족해!");return false;}state.coins-=n;save();updatePet();return true;}
 function updatePet(){
@@ -201,12 +236,31 @@ function buyItem(id){const i=ITEMS.find(x=>x.id===id);if(!i||state.owned.include
 function openShop(){$("reading").classList.add("hidden");document.querySelectorAll(".stage").forEach(e=>e.classList.add("hidden"));$("shop").classList.remove("hidden");document.querySelectorAll(".nav button").forEach(e=>e.classList.remove("active"));window.scrollTo({top:0,behavior:"smooth"});}
 function closeShop(){$("shop").classList.add("hidden");showStage(activeStage);}
 function showStage(i){activeStage=i;$("shop").classList.add("hidden");$("reading").classList.remove("hidden");document.querySelectorAll(".stage").forEach((e,j)=>e.classList.toggle("hidden",j!==i));document.querySelectorAll(".nav button").forEach((e,j)=>e.classList.toggle("active",j===i));window.scrollTo({top:0,behavior:"smooth"});}
-function initGlossary(){$("glossary").innerHTML=WORDS.map(w=>`<div class="glossary-item"><strong>${w.en}</strong>${w.ko}<br><span style="color:#9a8876">${w.example}</span></div>`).join("");}
 
-/* Flashcards: always all six expressions */
+function initGlossary(){
+ const root=$("glossary");root.innerHTML="";
+ WORDS.forEach(w=>{
+  const item=document.createElement("div");item.className="glossary-item";
+  const title=document.createElement("strong");title.textContent=w.en;item.appendChild(title);
+  const meaning=document.createElement("div");meaning.textContent=w.ko;item.appendChild(meaning);
+  item.appendChild(pronunciationButtons(w));
+  const example=document.createElement("p");example.className="muted";example.textContent=w.example;item.appendChild(example);
+  root.appendChild(item);
+ });
+}
+
+/* Flashcards: all six expressions */
 function setFlashDirection(d){flashDirection=d;$("dirEn").className="btn "+(d==="en"?"primary":"white");$("dirKo").className="btn "+(d==="ko"?"primary":"white");}
 function startFlash(){flashDeck=shuffle(WORDS);flashIndex=0;flashKnown={};$("flashSetup").classList.add("hidden");$("flashResult").classList.add("hidden");$("flashArea").classList.remove("hidden");renderFlash();}
-function renderFlash(){const w=flashDeck[flashIndex];$("flashCounter").textContent=`Card ${flashIndex+1} / ${flashDeck.length}`;$("flashFront").textContent=flashDirection==="en"?w.en:w.ko;$("flashMeaning").textContent=flashDirection==="en"?w.ko:w.en;$("flashExample").textContent=w.example;$("flashExampleKo").textContent=w.exampleKo;$("flashBack").classList.add("hidden");$("flashPrompt").textContent="뜻을 먼저 떠올린 다음 보기 버튼을 눌러 봐!";}
+function renderFlash(){
+ const w=flashDeck[flashIndex];$("flashCounter").textContent=`Card ${flashIndex+1} / ${flashDeck.length}`;
+ $("flashFront").textContent=flashDirection==="en"?w.en:w.ko;
+ const pron=$("flashPronunciation");pron.innerHTML="";
+ if(flashDirection==="en")pron.appendChild(pronunciationButtons(w,true));
+ $("flashMeaning").textContent=flashDirection==="en"?w.ko:w.en;
+ $("flashExample").textContent=w.example;$("flashExampleKo").textContent=w.exampleKo;
+ $("flashBack").classList.add("hidden");$("flashPrompt").textContent="뜻을 먼저 떠올린 다음 발음을 듣고, 뜻 보기 버튼을 눌러 봐!";
+}
 function revealFlash(){$("flashBack").classList.remove("hidden");$("flashPrompt").textContent="이 표현을 기억할 수 있겠어? 알아요 또는 몰라요를 선택해 줘.";}
 function markFlash(known){flashKnown[flashDeck[flashIndex].en]=known;if(flashIndex<flashDeck.length-1){flashIndex++;renderFlash();}else finishFlash();}
 function previousFlash(){if(flashIndex>0){flashIndex--;renderFlash();}}
@@ -215,11 +269,11 @@ function finishFlash(){
  $("flashArea").classList.add("hidden");$("flashResult").classList.remove("hidden");
  const unknown=WORDS.filter(w=>flashKnown[w.en]===false);
  $("flashResultText").textContent=`카드 6개 완료! 알아요 ${Object.values(flashKnown).filter(Boolean).length}개 · 몰라요 ${unknown.length}개`;
- $("unknownList").innerHTML=unknown.length?unknown.map(w=>`<div class="glossary-item"><strong>${w.en}</strong>${w.ko}<br>${w.example}</div>`).join(""):`<p class="muted">모르는 표현이 없어! 정말 잘했어! 🌟</p>`;
+ $("unknownList").innerHTML=unknown.length?unknown.map(w=>`<div class="glossary-item"><strong>${w.en}</strong>${w.ko}<div class="pronounce-row"><button class="pronounce" onclick="speakExpression('${w.en}','uk')">🇬🇧 UK Audio</button><button class="pronounce us" onclick="speakExpression('${w.en}','us')">🇺🇸 US Audio</button></div><p>${w.example}</p></div>`).join(""):`<p class="muted">모르는 표현이 없어! 정말 잘했어! 🌟</p>`;
 }
 function reviewUnknown(){const u=WORDS.filter(w=>flashKnown[w.en]===false);if(!u.length){toast("다시 볼 표현이 없어! 모든 표현을 잘 알고 있네!");return;}flashDeck=shuffle(u);flashIndex=0;$("flashResult").classList.add("hidden");$("flashArea").classList.remove("hidden");renderFlash();toast("모르는 표현만 다시 보는 중이야!");}
 
-/* Practice settings */
+/* Practice */
 function setPracticeMode(m){practiceMode=m;[["pmcq","mcq"],["ptype","type"],["pmatch","match"]].forEach(([id,v])=>$(id).className="btn "+(v===m?"primary":"white"));}
 function setPracticeDirection(d){practiceDirection=d;$("pdirEn").className="btn "+(d==="en"?"primary":"white");$("pdirKo").className="btn "+(d==="ko"?"primary":"white");}
 function startPractice(){practiceDeck=shuffle(WORDS);practiceIndex=0;$("practiceSetup").classList.add("hidden");$("practiceArea").classList.remove("hidden");renderPractice();}
@@ -229,7 +283,8 @@ function renderPractice(){
  $("practiceCounter").textContent=`Question ${practiceIndex+1} / ${practiceDeck.length}`;$("practiceFeedback").innerHTML="";$("practiceControls").innerHTML="";
  if(practiceMode==="match"){renderMatch();return;}
  const prompt=practiceDirection==="en"?w.en:w.ko;
- $("practiceQuestion").innerHTML=`<div class="question"><div class="question-label">${practiceMode==="mcq"?"MULTIPLE CHOICE":"TYPE YOUR ANSWER"}</div><div class="prompt">${prompt}</div>${practiceMode==="type"?`<input id="answerInput" placeholder="${practiceDirection==="en"?"한국어 뜻 입력":"영어 표현 입력"}" autocomplete="off">`:`<div id="choices" class="choice-list"></div>`}</div>`;
+ $("practiceQuestion").innerHTML=`<div class="question"><div class="question-label">${practiceMode==="mcq"?"MULTIPLE CHOICE":"TYPE YOUR ANSWER"}</div><div class="prompt">${prompt}</div>${practiceDirection==="en"?'<div id="practiceAudio"></div>':""}${practiceMode==="type"?`<input id="answerInput" placeholder="${practiceDirection==="en"?"한국어 뜻 입력":"영어 표현 입력"}" autocomplete="off">`:`<div id="choices" class="choice-list"></div>`}</div>`;
+ if(practiceDirection==="en")$("practiceAudio").appendChild(pronunciationButtons(w));
  if(practiceMode==="mcq"){
   practiceRound.choices.forEach(c=>{const b=document.createElement("button");b.className="choice";b.textContent=c;b.onclick=()=>checkPractice(norm(c)===norm(practiceDirection==="en"?w.ko:w.en),b);$("choices").appendChild(b);});
  }else{
@@ -248,21 +303,20 @@ function checkPractice(ok,button){
   $("practiceFeedback").innerHTML='<div class="feedback bad">아쉽지만 괜찮아! 힌트를 보고 한 번 더 도전해 봐.</div>';
   $("practiceControls").innerHTML='<button class="btn primary" onclick="practiceRetry()">한 번 더 도전</button>';
  }else{
-  r.locked=true;$("practiceFeedback").innerHTML=`<div class="feedback bad">다시 확인해 보자.<br>정답: ${r.w.en} — ${r.w.ko}</div>`;
+  r.locked=true;$("practiceFeedback").innerHTML=`<div class="feedback bad">정답을 확인해 보자.<br>${r.w.en} — ${r.w.ko}</div>`;
   $("practiceControls").innerHTML='<button class="btn green" onclick="nextPractice()">다음 문제 →</button>';
  }
 }
 function practiceRetry(){
- const r=practiceRound;$("practiceFeedback").innerHTML="";
+ const r=practiceRound;
  if($("choices"))[...$("choices").children].forEach(b=>{b.disabled=false;b.classList.remove("wrong");});
  if($("answerInput")){$("answerInput").disabled=false;$("answerInput").value="";}
- $("practiceControls").innerHTML='<button class="btn purple" onclick="practiceHint()">힌트 보기 (-10 🪙)</button>';
+ $("practiceFeedback").innerHTML=`<div class="hintbox">💡 힌트: ${r.w.hint}</div>`;
+ $("practiceControls").innerHTML='<button class="btn purple" onclick="practiceHint()">추가 힌트 보기 (-10 🪙)</button>';
  if($("answerInput")){$("practiceControls").innerHTML+='<button class="btn primary" id="submitPractice">정답 확인</button>';$("submitPractice").onclick=()=>checkPractice(norm($("answerInput").value)===norm(practiceDirection==="en"?r.w.ko:r.w.en));}
 }
-function practiceHint(){const r=practiceRound;if(!spend(10))return;r.hints++;const h=r.hints===1?r.w.hint:`첫 단어는 "${r.w.en.split(" ")[0]}" 이야.`;
- $("practiceFeedback").innerHTML=`<div class="hintbox">💡 힌트 ${r.hints}: ${h}<br>힌트를 보고 다시 답해 봐!</div>`;
- $("practiceControls").innerHTML='<button class="btn primary" onclick="practiceRetry()">한 번 더 도전</button>';
-}
+function practiceHint(){const r=practiceRound;if(!spend(10))return;r.hints++;$("practiceFeedback").innerHTML=`<div class="hintbox">💡 추가 힌트 ${r.hints}: ${r.hints===1?r.w.hint:`표현은 "${r.w.en}"이고, ${r.w.en.split(" ").length}개의 단어로 되어 있어.`}</div>`;$("practiceControls").innerHTML='<button class="btn primary" onclick="practiceRetry()">다시 도전</button><button class="btn purple" onclick="practiceShowAnswer()">정답 보기 (-10 🪙)</button>';}
+function practiceShowAnswer(){const r=practiceRound;if(!spend(10))return;r.locked=true;$("practiceFeedback").innerHTML=`<div class="feedback bad">정답: ${r.w.en} — ${r.w.ko}<br>${r.w.example}<br>${r.w.exampleKo}</div>`;$("practiceControls").innerHTML='<button class="btn green" onclick="nextPractice()">다음 문제 →</button>';}
 function renderMatch(){
  const left=shuffle(WORDS),right=shuffle(WORDS);let selected=null;const matched=new Set();
  $("practiceQuestion").innerHTML='<div class="question"><div class="question-label">MATCHING GAME</div><div class="prompt">영어와 한국어 뜻을 짝지어 봐!</div><div class="matchboard"><div class="matchcol" id="matchLeft"></div><div class="matchcol" id="matchRight"></div></div><p id="matchStatus" class="muted">찾은 짝: 0 / 6</p></div>';
@@ -277,7 +331,7 @@ function renderMatch(){
 function nextPractice(){if(practiceIndex<practiceDeck.length-1){practiceIndex++;renderPractice();}else{$("practiceQuestion").innerHTML='<div class="result"><div class="emoji">🌟</div><h2>Practice Complete!</h2><p>6개 표현을 모두 연습했어!</p></div>';$("practiceFeedback").innerHTML="";$("practiceControls").innerHTML='<button class="btn primary" onclick="showStage(2)">Go to Final Challenge →</button>';}}
 function stopPractice(){$("practiceArea").classList.add("hidden");$("practiceSetup").classList.remove("hidden");}
 
-/* Final challenge: exactly six questions */
+/* Final challenge */
 function startTest(){testDeck=shuffle(WORDS);testIndex=0;testCorrect=0;testEarned=0;testReviews=[];$("testSetup").classList.add("hidden");$("testResult").classList.add("hidden");$("testArea").classList.remove("hidden");renderTest();}
 function renderTest(){
  const w=testDeck[testIndex],kind=["mcq","type","reverse","sentence"][testIndex%4];
@@ -295,7 +349,8 @@ function renderTest(){
  }else{
   const reverse=kind==="reverse";const correct=reverse?w.ko:w.en;
   const options=shuffle([correct,...shuffle(WORDS.filter(x=>x!==w)).slice(0,3).map(x=>reverse?x.ko:x.en)]);
-  box.innerHTML=`<div class="question"><div class="question-label">MULTIPLE CHOICE</div><div class="prompt">${reverse?w.en:w.ko}</div><div id="testChoices" class="choice-list"></div></div>`;
+  box.innerHTML=`<div class="question"><div class="question-label">MULTIPLE CHOICE</div><div class="prompt">${reverse?w.en:w.ko}</div>${reverse?`<div id="testAudio"></div>`:""}<div id="testChoices" class="choice-list"></div></div>`;
+  if(reverse)$("testAudio").appendChild(pronunciationButtons(w));
   options.forEach(opt=>{const b=document.createElement("button");b.className="choice";b.textContent=opt;b.onclick=()=>checkTest(norm(opt)===norm(correct),b);$("testChoices").appendChild(b);});
  }
  if($("testInput"))$("testInput").onkeydown=e=>{if(e.key==="Enter")$("testSubmit").click();};
@@ -307,13 +362,14 @@ function checkTest(ok,button){
  if(r.attempts===1){$("testFeedback").innerHTML='<div class="feedback bad">아쉽지만 한 번 더 도전할 수 있어! 힌트를 활용해 봐.</div>';if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);if($("testInput"))$("testInput").disabled=true;$("testControls").innerHTML='<button class="btn primary" onclick="testRetry()">한 번 더 도전</button>';}
  else{$("testFeedback").innerHTML='<div class="feedback bad">다시 틀렸어. 힌트를 더 확인하고 정답을 배워 보자.</div>';if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);if($("testInput"))$("testInput").disabled=true;$("testControls").innerHTML='<button class="btn purple" onclick="testHint()">추가 힌트 (-10 🪙)</button><button class="btn purple" onclick="revealTestAnswer()">정답 보기 (-10 🪙)</button><button class="btn green" onclick="nextTest()">다음 문제 →</button>';}
 }
-function testRetry(){const r=testRound;$("testFeedback").innerHTML="";if($("testChoices"))[...$("testChoices").children].forEach(b=>{b.disabled=false;b.classList.remove("wrong");});if($("testInput")){$("testInput").disabled=false;$("testInput").value="";$("testInput").focus();}$("testControls").innerHTML='<button class="btn purple" onclick="testHint()">힌트 보기 (-10 🪙)</button>';
+function testRetry(){const r=testRound;$("testFeedback").innerHTML=`<div class="hintbox">💡 힌트: ${r.w.hint}</div>`;if($("testChoices"))[...$("testChoices").children].forEach(b=>{b.disabled=false;b.classList.remove("wrong");});if($("testInput")){$("testInput").disabled=false;$("testInput").value="";$("testInput").focus();}$("testControls").innerHTML='<button class="btn purple" onclick="testHint()">추가 힌트 (-10 🪙)</button>';
  if($("testInput")){$("testControls").innerHTML+='<button class="btn primary" id="testSubmit">정답 확인</button>';$("testSubmit").onclick=()=>checkTest(norm($("testInput").value)===norm(r.w.en));}}
-function testHint(){const r=testRound;if(!spend(10))return;r.hints++;const hint=r.hints===1?r.w.hint:`첫 단어는 "${r.w.en.split(" ")[0]}" 이야. 단어 수는 ${r.w.en.split(" ").length}개야.`;$("testFeedback").innerHTML=`<div class="hintbox">💡 힌트 ${r.hints}: ${hint}<br>힌트를 보고 다시 도전해 봐!</div>`;$("testControls").innerHTML='<button class="btn primary" onclick="testRetry()">한 번 더 도전</button><button class="btn purple" onclick="revealTestAnswer()">정답 보기 (-10 🪙)</button>';}
+function testHint(){const r=testRound;if(!spend(10))return;r.hints++;const hint=r.hints===1?r.w.hint:`표현은 "${r.w.en}"이고, ${r.w.en.split(" ").length}개의 단어로 되어 있어.`;$("testFeedback").innerHTML=`<div class="hintbox">💡 힌트 ${r.hints}: ${hint}<br>힌트를 보고 다시 도전해 봐!</div>`;$("testControls").innerHTML='<button class="btn primary" onclick="testRetry()">다시 도전</button><button class="btn purple" onclick="revealTestAnswer()">정답 보기 (-10 🪙)</button>';}
 function revealTestAnswer(){const r=testRound;if(!spend(10))return;r.locked=true;testReviews.push({w:r.w,ok:false});$("testFeedback").innerHTML=`<div class="feedback bad">정답을 확인했어.<br><b>${r.w.en} — ${r.w.ko}</b><br>${r.w.example}<br>${r.w.exampleKo}</div>`;if($("testInput"))$("testInput").disabled=true;if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);$("testControls").innerHTML='<button class="btn green" onclick="nextTest()">다음 문제 →</button>';}
 function nextTest(){if(testIndex<testDeck.length-1){testIndex++;renderTest();}else finishTest();}
-function finishTest(){$("testArea").classList.add("hidden");$("testResult").classList.remove("hidden");$("resultScore").textContent=`${testCorrect} / ${testDeck.length}`;$("earnedCoins").textContent=testEarned;$("resultEmoji").textContent=testCorrect===6?"🏆":testCorrect>=4?"🎉":"🌱";$("resultText").textContent=testCorrect===6?"완벽해! 모든 문제를 맞혔어!":testCorrect>=4?"정말 잘했어! 틀린 표현도 복습해 보자.":"수고했어! 학습 단계에서 다시 연습하고 도전해 봐.";$("testReview").innerHTML=testReviews.map((r,i)=>`<div class="glossary-item" style="margin:7px 0"><b>${r.ok?"✅":"❌"} ${i+1}. ${r.w.en}</b><br>${r.w.ko}<br><span class="muted">${r.w.example}</span></div>`).join("");}
+function finishTest(){$("testArea").classList.add("hidden");$("testResult").classList.remove("hidden");$("resultScore").textContent=`${testCorrect} / ${testDeck.length}`;$("earnedCoins").textContent=testEarned;$("resultEmoji").textContent=testCorrect===6?"🏆":testCorrect>=4?"🎉":"🌱";$("resultText").textContent=testCorrect===6?"완벽해! 모든 문제를 맞혔어!":testCorrect>=4?"정말 잘했어! 틀린 표현도 복습해 보자.":"수고했어! 학습 단계에서 다시 연습하고 도전해 봐.";$("testReview").innerHTML=testReviews.map((r,i)=>`<div class="glossary-item" style="margin:7px 0"><b>${r.ok?"✅":"❌"} ${i+1}. ${r.w.en}</b><br>${r.w.ko}<br><span class="muted">${r.w.example}</span><div class="pronounce-row"><button class="pronounce" onclick="speakExpression('${r.w.en}','uk')">🇬🇧 UK Audio</button><button class="pronounce us" onclick="speakExpression('${r.w.en}','us')">🇺🇸 US Audio</button></div></div>`).join("");}
 function stopTest(){$("testArea").classList.add("hidden");$("testSetup").classList.remove("hidden");}
+
 initGlossary();updatePet();showStage(0);
 </script>
 </body>
