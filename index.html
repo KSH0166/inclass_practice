@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capybara Life Makeover</title>
+<style>
+:root{--bg:#fff8ed;--paper:#fffefa;--brown:#674832;--text:#493b30;--muted:#958270;--orange:#ffc46b;--green:#a9dfb8;--pink:#ffd5df;--purple:#e5dcff;--line:#edddc8}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font-family:Arial,"Malgun Gothic",sans-serif;background:linear-gradient(160deg,#e9f8ed,#fff8e9 50%,#fff0ed);min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}
+button:focus-visible,input:focus-visible{outline:3px solid #e6a441;outline-offset:2px}
+.app{max-width:900px;margin:auto;padding:15px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px}.brand-icon{font-size:43px}
+.brand h1{font-size:21px;margin:0;color:var(--brown)}.brand p{font-size:12px;margin:4px 0;color:var(--muted)}
+.coins{background:white;border:2px solid #f4d38b;border-radius:24px;padding:10px 15px;font-weight:bold}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:21px;margin-bottom:14px;box-shadow:0 5px 0 #75543b12}
+.hero{background:linear-gradient(140deg,#d9f2e1,#fff0cb);text-align:center}
+.hero-pet{font-size:75px;line-height:1.2}.hero h2{font-size:clamp(25px,5vw,36px);margin:9px 0}
+.hero p{line-height:1.8;margin:8px auto;max-width:600px}
+h2{margin:0 0 8px;font-size:24px}h3{margin:0 0 8px}
+.muted{color:var(--muted);font-size:14px;line-height:1.7}
+.pill{display:inline-block;background:#fff;border:1px solid var(--line);padding:7px 11px;border-radius:20px;font-size:12px;margin:3px}
+.pet-panel{display:grid;grid-template-columns:135px 1fr;gap:16px;align-items:center}
+.pet-scene{display:grid;place-items:center;min-height:125px;border-radius:18px;background:linear-gradient(#d9effb 0 55%,#d8edc4 55%);font-size:62px}
+.progress{height:10px;border-radius:20px;background:#f1e7d8;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#a2dfad,#ffcf72);width:0;transition:width .25s}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}
+.nav button{border:2px solid var(--line);background:white;border-radius:15px;padding:13px 6px;font-weight:bold;color:var(--brown)}
+.nav button.active{background:#fff0bd;border-color:#eab952}.nav small{display:block;font-size:11px;font-weight:normal;margin-top:4px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:bold}
+.primary{background:var(--orange);box-shadow:0 3px 0 #e5a34a}.green{background:var(--green)}.pink{background:var(--pink)}.purple{background:var(--purple)}.white{background:white;border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.row .btn{flex:1}
+.tag{background:#eee7ff;border-radius:20px;padding:6px 10px;font-size:12px;font-weight:bold}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.passage{background:#fff9e9;border:1px solid #efdfbd;border-radius:16px;padding:17px;line-height:1.95;font-size:15px}
+.passage strong{color:#b06e23}
+.glossary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.glossary-item{background:white;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;line-height:1.6}
+.glossary-item strong{display:block;font-size:15px;color:#805a35}
+.counter{text-align:center;color:var(--muted);font-weight:bold;margin:12px}
+.flash{min-height:250px;background:linear-gradient(150deg,#fffdf6,#fff1d3);border:2px solid var(--line);border-radius:19px;display:grid;place-items:center;text-align:center;padding:25px;overflow-wrap:anywhere}
+.big{font-size:clamp(25px,5vw,36px);font-weight:bold}
+.flash-answer{margin-top:18px;line-height:1.8}.flash-answer .big{font-size:24px}
+.choice-list{display:grid;gap:9px;margin-top:12px}
+.choice{padding:13px;text-align:left;line-height:1.5;background:white;border:2px solid var(--line);border-radius:12px;color:var(--text)}
+.choice.correct{background:#e8f8ed;border-color:#7ecb96}.choice.wrong{background:#fff0f0;border-color:#e69b9b}
+.question{padding:17px;background:#fff8e9;border:1px solid var(--line);border-radius:16px;margin:12px 0}
+.question-label{font-size:11px;font-weight:bold;color:#ad7b38;letter-spacing:1px}
+.prompt{font-size:23px;font-weight:bold;line-height:1.6;margin:10px 0;overflow-wrap:anywhere}
+.feedback{margin-top:12px;padding:12px;border-radius:12px;line-height:1.7;font-size:14px}
+.good{background:#e8f8ed;color:#286543}.bad{background:#fff0f0;color:#914444}
+.hintbox{background:#f0ecff;padding:12px;border-radius:12px;margin-top:10px;line-height:1.7;font-size:14px}
+.matchboard{display:grid;grid-template-columns:1fr 1fr;gap:8px}.matchcol{display:grid;gap:8px}
+.matchitem{min-height:58px;background:white;border:2px solid var(--line);border-radius:12px;padding:9px;font-weight:bold;font-size:13px;overflow-wrap:anywhere}
+.matchitem.selected{background:#f0ecff;border-color:#a18ae4}.matchitem.matched{background:#e8f8ed;border-color:#8ac99b}
+.result{text-align:center;padding:22px;background:linear-gradient(135deg,#fff0c7,#e2f8e8);border-radius:18px}
+.result .emoji{font-size:65px}.result .score{font-size:30px;font-weight:bold;margin:10px}
+.shopgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.shopitem{background:white;border:1px solid var(--line);border-radius:14px;padding:12px 7px;text-align:center}
+.shopitem .emoji{font-size:28px}.shopitem p{font-size:12px;line-height:1.5}
+.shopitem button{width:100%;font-size:12px;padding:9px 3px}
+.hidden{display:none!important}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#513c2d;color:white;padding:12px 17px;border-radius:12px;z-index:9;max-width:90%;text-align:center}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
+@media(max-width:560px){.app{padding:9px}.card{padding:15px}.pet-panel{grid-template-columns:95px 1fr;gap:10px}.pet-scene{min-height:105px;font-size:49px}.glossary{grid-template-columns:1fr}.shopgrid{grid-template-columns:repeat(2,1fr)}.nav button{font-size:12px}.prompt{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="brand-icon">🦫</div><div><h1>Capybara Life Makeover</h1><p>Learn English. Change a capybara's life!</p></div></div>
+  <div class="coins">🪙 <span id="coins">0</span> coins</div>
+</header>
+
+<section class="card hero" id="hero">
+  <div class="hero-pet" id="heroPet">🦫</div>
+  <span class="pill">🌱 English Learning Adventure</span>
+  <h2>Capybara Life Makeover</h2>
+  <p>영어 표현을 익히고 코인을 모아서<br>가난한 카피바라의 인생을 바꿔 줘!</p>
+  <span class="pill">📖 Learn</span><span class="pill">✏️ Practice</span><span class="pill">🏆 Challenge</span>
+</section>
+
+<section class="card">
+  <div class="pet-panel">
+    <div class="pet-scene"><span id="petEmoji">🦫</span></div>
+    <div><h3 id="petTitle">A Poor Capybara</h3><p class="muted" id="petDesc">아직 가진 것이 없어. 영어를 공부해서 새로운 삶을 선물해 줘!</p>
+      <div class="progress"><div id="progressBar"></div></div>
+      <p class="muted" id="nextGoal"></p><button class="btn purple" onclick="openShop()">🛍️ Life Makeover Shop</button>
+    </div>
+  </div>
+</section>
+
+<section class="card" id="reading">
+  <div class="section-head"><div><h2>📚 Read the Story First!</h2><p class="muted">먼저 지문을 읽고 오늘 배울 표현 6개를 확인해 봐.</p></div><span class="tag">TODAY'S STORY</span></div>
+  <div class="passage">
+    Our class is preparing for the school festival. Mina is <strong>in charge of</strong> the English booth. She asked everyone to <strong>take part in</strong> a short quiz game. At first, the team could not <strong>figure out</strong> how to make the activity interesting. They decided to <strong>work on</strong> a mystery theme. After testing the game, they decided to <strong>cut down on</strong> long instructions. They hope these changes will <strong>make a difference</strong> for the students who visit the booth.
+  </div>
+  <h3 style="margin-top:18px">🌼 Today's 6 Expressions</h3><div class="glossary" id="glossary"></div>
+  <div class="row"><button class="btn primary" onclick="showStage(0)">Start Learning →</button><button class="btn white" onclick="showStage(1)">Go to Practice</button><button class="btn white" onclick="showStage(2)">Take the Challenge</button></div>
+</section>
+
+<nav class="nav">
+  <button id="nav0" class="active" onclick="showStage(0)">📖 Stage 1<small>Flashcards</small></button>
+  <button id="nav1" onclick="showStage(1)">✏️ Stage 2<small>Practice</small></button>
+  <button id="nav2" onclick="showStage(2)">🏆 Stage 3<small>Challenge</small></button>
+</nav>
+
+<section class="card stage" id="stage0">
+  <div class="section-head"><div><h2>📖 Flashcard Learning</h2><p class="muted">뜻을 확인한 뒤, 아는 표현과 모르는 표현을 구분해 줘.</p></div><span class="tag">STAGE 1</span></div>
+  <div class="setting">
+    <label>Card Direction</label>
+    <div class="row" style="margin-top:6px"><button id="dirEn" class="btn primary" onclick="setFlashDirection('en')">English → Korean</button><button id="dirKo" class="btn white" onclick="setFlashDirection('ko')">Korean → English</button></div>
+  </div>
+  <div id="flashSetup"><p class="muted">6개 표현을 모두 학습해 봐. 모르는 표현은 마지막에 다시 볼 수 있어.</p><button class="btn primary" onclick="startFlash()">Start Flashcards 🌟</button></div>
+  <div id="flashArea" class="hidden">
+    <div class="counter" id="flashCounter"></div>
+    <div class="flash"><div><div class="big" id="flashFront"></div><div id="flashBack" class="flash-answer hidden"><div class="big" id="flashMeaning"></div><p id="flashExample"></p><p class="muted" id="flashExampleKo"></p></div><p class="muted" id="flashPrompt">뜻을 먼저 생각해 봐!</p></div></div>
+    <div class="row"><button class="btn purple" onclick="revealFlash()">👀 뜻 보기</button><button class="btn pink" onclick="markFlash(false)">🙈 몰라요</button><button class="btn green" onclick="markFlash(true)">✨ 알아요</button></div>
+    <div class="row"><button class="btn white" onclick="previousFlash()">← 이전 카드</button><button class="btn white" onclick="stopFlash()">끝내기</button></div>
+  </div>
+  <div id="flashResult" class="hidden"><div class="result"><div class="emoji">🎉</div><h2>Flashcards Complete!</h2><p id="flashResultText"></p><p class="muted">모르는 표현만 다시 학습할 수 있어.</p></div><div class="row"><button class="btn primary" onclick="reviewUnknown()">🔁 Review Unknown Words</button><button class="btn green" onclick="startFlash()">다시 전체 학습</button></div><div id="unknownList" class="glossary"></div></div>
+</section>
+
+<section class="card stage hidden" id="stage1">
+  <div class="section-head"><div><h2>✏️ Practice Zone</h2><p class="muted">6개 표현을 연습해 봐. 틀려도 힌트를 보고 다시 도전할 수 있어.</p></div><span class="tag">STAGE 2</span></div>
+  <div class="setting"><label>Practice Type</label><div class="row" style="margin-top:6px"><button id="pmcq" class="btn primary" onclick="setPracticeMode('mcq')">객관식</button><button id="ptype" class="btn white" onclick="setPracticeMode('type')">주관식</button><button id="pmatch" class="btn white" onclick="setPracticeMode('match')">매칭</button></div></div>
+  <div class="setting"><label>Question Direction</label><div class="row" style="margin-top:6px"><button id="pdirEn" class="btn primary" onclick="setPracticeDirection('en')">영어 → 한국어</button><button id="pdirKo" class="btn white" onclick="setPracticeDirection('ko')">한국어 → 영어</button></div></div>
+  <div id="practiceSetup" style="margin-top:14px"><p class="muted">문제 수는 고정이야. 오늘의 6개 표현을 모두 연습해!</p><button class="btn primary" onclick="startPractice()">Start Practice 🚀</button></div>
+  <div id="practiceArea" class="hidden"><div class="counter" id="practiceCounter"></div><div id="practiceQuestion"></div><div id="practiceFeedback" aria-live="polite"></div><div id="practiceControls" class="row"></div><div class="row"><button class="btn white" onclick="stopPractice()">연습 설정으로 돌아가기</button></div></div>
+</section>
+
+<section class="card stage hidden" id="stage2">
+  <div class="section-head"><div><h2>🏆 Final Challenge</h2><p class="muted">객관식, 주관식, 문장 빈칸 문제가 섞여 있어.</p></div><span class="tag">STAGE 3</span></div>
+  <p class="muted">6개 표현을 한 번씩 테스트해. 정답은 +50코인, 힌트는 사용할 때마다 −10코인이야.</p>
+  <div id="testSetup"><div style="font-size:60px">🎯</div><button class="btn primary" onclick="startTest()">Start Final Challenge!</button></div>
+  <div id="testArea" class="hidden"><div class="counter" id="testCounter"></div><div id="testQuestion"></div><div id="testFeedback" aria-live="polite"></div><div id="testControls" class="row"></div><div class="row"><button class="btn white" onclick="stopTest()">실전 설정으로 돌아가기</button></div></div>
+  <div id="testResult" class="hidden"><div class="result"><div class="emoji" id="resultEmoji">🎉</div><h2>Challenge Complete!</h2><div class="score" id="resultScore">0 / 6</div><p id="resultText"></p><p>🪙 이번에 획득한 코인: <b id="earnedCoins">0</b></p></div><h3 style="margin-top:18px">📝 Review Your Answers</h3><div id="testReview"></div><div class="row"><button class="btn primary" onclick="startTest()">Try Again</button><button class="btn purple" onclick="openShop()">Spend Your Coins 🏡</button></div></div>
+</section>
+
+<section class="card hidden" id="shop">
+  <div class="section-head"><div><h2>🏡 Capybara Life Makeover</h2><p class="muted">공부해서 모은 코인으로 카피바라의 삶을 바꿔 줘!</p></div><span class="tag">COIN SHOP</span></div>
+  <div class="pet-panel"><div class="pet-scene" id="shopPet">🦫</div><div><h3 id="shopTitle"></h3><p class="muted" id="shopDesc"></p></div></div>
+  <div class="shopgrid" id="shopGrid"></div><div class="row"><button class="btn white" onclick="closeShop()">← Back to Learning</button></div>
+</section>
+<footer>Capybara Life Makeover · Learn a little, grow a lot! 🌱</footer>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+"use strict";
+const WORDS=[
+{en:"in charge of",ko:"~을 담당하는",short:"담당하다",hint:"책임을 맡거나 어떤 일을 관리하는 것",example:"Mina is in charge of the English booth.",exampleKo:"미나는 영어 부스를 담당하고 있다."},
+{en:"take part in",ko:"~에 참여하다",short:"참여하다",hint:"활동이나 행사에 참가하는 것",example:"I want to take part in the school festival.",exampleKo:"나는 학교 축제에 참여하고 싶다."},
+{en:"figure out",ko:"알아내다, 해결하다",short:"알아내다",hint:"답이나 해결 방법을 찾아내는 것",example:"Let's figure out the answer together.",exampleKo:"함께 답을 알아내자."},
+{en:"work on",ko:"~을 작업하다, 열심히 하다",short:"작업하다",hint:"어떤 과제나 활동에 노력을 들이는 것",example:"We work on our new quiz game.",exampleKo:"우리는 새 퀴즈 게임을 작업한다."},
+{en:"cut down on",ko:"~을 줄이다",short:"줄이다",hint:"양이나 사용량을 더 적게 만드는 것",example:"We should cut down on long instructions.",exampleKo:"우리는 긴 설명을 줄여야 한다."},
+{en:"make a difference",ko:"변화를 가져오다, 효과가 있다",short:"변화를 만들다",hint:"어떤 것이 결과나 상황에 영향을 주는 것",example:"Small changes can make a difference.",exampleKo:"작은 변화도 효과가 있을 수 있다."}
+];
+const ITEMS=[
+{id:"bath",name:"깨끗하게 씻기",icon:"🧼",price:100,desc:"보송보송 깨끗해져!"},
+{id:"shirt",name:"귀여운 옷",icon:"👕",price:200,desc:"새 옷을 입었어!"},
+{id:"hat",name:"멋진 모자",icon:"🎩",price:300,desc:"멋쟁이 카피바라!"},
+{id:"house",name:"작은 집",icon:"🏡",price:500,desc:"나만의 집이 생겼어!"},
+{id:"mansion",name:"큰 저택",icon:"🏠",price:900,desc:"아늑한 저택에 살아!"},
+{id:"palace",name:"황금 궁전",icon:"🏰",price:1500,desc:"궁전의 주인이야!"}
+];
+const $=id=>document.getElementById(id);
+const norm=s=>String(s||"").toLowerCase().trim().replace(/[.,!?;:'"“”‘’]/g,"").replace(/\s+/g," ");
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let state={coins:0,owned:[]};
+try{const s=JSON.parse(localStorage.getItem("capybaraLifeMakeover"));if(s&&Number.isFinite(s.coins))state={...state,...s};}catch(e){}
+let activeStage=0,flashDirection="en",flashDeck=[],flashIndex=0,flashKnown={};
+let practiceMode="mcq",practiceDirection="en",practiceDeck=[],practiceIndex=0,practiceRound=null;
+let testDeck=[],testIndex=0,testRound=null,testCorrect=0,testEarned=0,testReviews=[];
+let toastTimer;
+function save(){try{localStorage.setItem("capybaraLifeMakeover",JSON.stringify(state));}catch(e){}}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2300);}
+function earn(n){state.coins+=n;save();updatePet();}
+function spend(n){if(state.coins<n){toast("코인이 부족해!");return false;}state.coins-=n;save();updatePet();return true;}
+function updatePet(){
+ $("coins").textContent=state.coins;const o=state.owned;
+ let title="A Poor Capybara",desc="아직 가진 것이 없어. 함께 영어를 공부해 보자!",emoji="🦫";
+ if(o.includes("palace")){title="Royal Capybara";desc="황금 궁전에서 행복하게 살고 있어!";emoji="👑🦫";}
+ else if(o.includes("mansion")){title="Capybara in a Mansion";desc="멋진 저택이 생겼어. 다음은 궁전이야!";}
+ else if(o.includes("house")){title="Capybara with a Home";desc="이제 편하게 쉴 집이 생겼어!";}
+ else if(o.includes("shirt")){title="Stylish Capybara";desc="새 옷을 입어서 기분이 좋아!";}
+ else if(o.includes("bath")){title="Clean Capybara";desc="깨끗해졌어! 이제 새 옷을 사 보자.";}
+ $("petEmoji").textContent=emoji;$("heroPet").textContent=emoji;$("shopPet").textContent=emoji;
+ $("petTitle").textContent=title;$("petDesc").textContent=desc;$("shopTitle").textContent=title;$("shopDesc").textContent=desc;
+ $("progressBar").style.width=Math.min(100,state.coins/1500*100)+"%";
+ const next=ITEMS.find(i=>!o.includes(i.id));
+ $("nextGoal").textContent=next?`다음 목표: ${next.name} · ${Math.max(0,next.price-state.coins)}코인 더 모으기`:"모든 아이템을 모았어! 🎉";
+ renderShop();
+}
+function renderShop(){
+ $("shopGrid").innerHTML=ITEMS.map(i=>{const has=state.owned.includes(i.id);return `<div class="shopitem"><div class="emoji">${i.icon}</div><b>${i.name}</b><p>${i.desc}</p><p>${has?"보유 중 ✓":"🪙 "+i.price+" coins"}</p><button class="btn ${has?"green":"primary"}" ${has||state.coins<i.price?"disabled":""} onclick="buyItem('${i.id}')">${has?"구매 완료":"구매하기"}</button></div>`;}).join("");
+}
+function buyItem(id){const i=ITEMS.find(x=>x.id===id);if(!i||state.owned.includes(id))return;if(state.coins<i.price){toast("코인이 부족해!");return;}state.coins-=i.price;state.owned.push(id);save();updatePet();toast(`${i.name} 구매 성공! ${i.icon}`);}
+function openShop(){$("reading").classList.add("hidden");document.querySelectorAll(".stage").forEach(e=>e.classList.add("hidden"));$("shop").classList.remove("hidden");document.querySelectorAll(".nav button").forEach(e=>e.classList.remove("active"));window.scrollTo({top:0,behavior:"smooth"});}
+function closeShop(){$("shop").classList.add("hidden");showStage(activeStage);}
+function showStage(i){activeStage=i;$("shop").classList.add("hidden");$("reading").classList.remove("hidden");document.querySelectorAll(".stage").forEach((e,j)=>e.classList.toggle("hidden",j!==i));document.querySelectorAll(".nav button").forEach((e,j)=>e.classList.toggle("active",j===i));window.scrollTo({top:0,behavior:"smooth"});}
+function initGlossary(){$("glossary").innerHTML=WORDS.map(w=>`<div class="glossary-item"><strong>${w.en}</strong>${w.ko}<br><span style="color:#9a8876">${w.example}</span></div>`).join("");}
+
+/* Flashcards: always all six expressions */
+function setFlashDirection(d){flashDirection=d;$("dirEn").className="btn "+(d==="en"?"primary":"white");$("dirKo").className="btn "+(d==="ko"?"primary":"white");}
+function startFlash(){flashDeck=shuffle(WORDS);flashIndex=0;flashKnown={};$("flashSetup").classList.add("hidden");$("flashResult").classList.add("hidden");$("flashArea").classList.remove("hidden");renderFlash();}
+function renderFlash(){const w=flashDeck[flashIndex];$("flashCounter").textContent=`Card ${flashIndex+1} / ${flashDeck.length}`;$("flashFront").textContent=flashDirection==="en"?w.en:w.ko;$("flashMeaning").textContent=flashDirection==="en"?w.ko:w.en;$("flashExample").textContent=w.example;$("flashExampleKo").textContent=w.exampleKo;$("flashBack").classList.add("hidden");$("flashPrompt").textContent="뜻을 먼저 떠올린 다음 보기 버튼을 눌러 봐!";}
+function revealFlash(){$("flashBack").classList.remove("hidden");$("flashPrompt").textContent="이 표현을 기억할 수 있겠어? 알아요 또는 몰라요를 선택해 줘.";}
+function markFlash(known){flashKnown[flashDeck[flashIndex].en]=known;if(flashIndex<flashDeck.length-1){flashIndex++;renderFlash();}else finishFlash();}
+function previousFlash(){if(flashIndex>0){flashIndex--;renderFlash();}}
+function stopFlash(){$("flashArea").classList.add("hidden");$("flashSetup").classList.remove("hidden");}
+function finishFlash(){
+ $("flashArea").classList.add("hidden");$("flashResult").classList.remove("hidden");
+ const unknown=WORDS.filter(w=>flashKnown[w.en]===false);
+ $("flashResultText").textContent=`카드 6개 완료! 알아요 ${Object.values(flashKnown).filter(Boolean).length}개 · 몰라요 ${unknown.length}개`;
+ $("unknownList").innerHTML=unknown.length?unknown.map(w=>`<div class="glossary-item"><strong>${w.en}</strong>${w.ko}<br>${w.example}</div>`).join(""):`<p class="muted">모르는 표현이 없어! 정말 잘했어! 🌟</p>`;
+}
+function reviewUnknown(){const u=WORDS.filter(w=>flashKnown[w.en]===false);if(!u.length){toast("다시 볼 표현이 없어! 모든 표현을 잘 알고 있네!");return;}flashDeck=shuffle(u);flashIndex=0;$("flashResult").classList.add("hidden");$("flashArea").classList.remove("hidden");renderFlash();toast("모르는 표현만 다시 보는 중이야!");}
+
+/* Practice settings */
+function setPracticeMode(m){practiceMode=m;[["pmcq","mcq"],["ptype","type"],["pmatch","match"]].forEach(([id,v])=>$(id).className="btn "+(v===m?"primary":"white"));}
+function setPracticeDirection(d){practiceDirection=d;$("pdirEn").className="btn "+(d==="en"?"primary":"white");$("pdirKo").className="btn "+(d==="ko"?"primary":"white");}
+function startPractice(){practiceDeck=shuffle(WORDS);practiceIndex=0;$("practiceSetup").classList.add("hidden");$("practiceArea").classList.remove("hidden");renderPractice();}
+function makeRound(w,d,kind){const correct=d==="en"?w.ko:w.en;const choices=shuffle([correct,...shuffle(WORDS.filter(x=>x!==w)).slice(0,3).map(x=>d==="en"?x.ko:x.en)]);return {w,d,kind,choices,attempts:0,hints:0,locked:false};}
+function renderPractice(){
+ const w=practiceDeck[practiceIndex];practiceRound=makeRound(w,practiceDirection,practiceMode);
+ $("practiceCounter").textContent=`Question ${practiceIndex+1} / ${practiceDeck.length}`;$("practiceFeedback").innerHTML="";$("practiceControls").innerHTML="";
+ if(practiceMode==="match"){renderMatch();return;}
+ const prompt=practiceDirection==="en"?w.en:w.ko;
+ $("practiceQuestion").innerHTML=`<div class="question"><div class="question-label">${practiceMode==="mcq"?"MULTIPLE CHOICE":"TYPE YOUR ANSWER"}</div><div class="prompt">${prompt}</div>${practiceMode==="type"?`<input id="answerInput" placeholder="${practiceDirection==="en"?"한국어 뜻 입력":"영어 표현 입력"}" autocomplete="off">`:`<div id="choices" class="choice-list"></div>`}</div>`;
+ if(practiceMode==="mcq"){
+  practiceRound.choices.forEach(c=>{const b=document.createElement("button");b.className="choice";b.textContent=c;b.onclick=()=>checkPractice(norm(c)===norm(practiceDirection==="en"?w.ko:w.en),b);$("choices").appendChild(b);});
+ }else{
+  $("practiceControls").innerHTML='<button class="btn primary" id="submitPractice">정답 확인</button>';
+  $("submitPractice").onclick=()=>checkPractice(norm($("answerInput").value)===norm(practiceDirection==="en"?w.ko:w.en));
+  $("answerInput").onkeydown=e=>{if(e.key==="Enter")$("submitPractice").click();};
+ }
+}
+function checkPractice(ok,button){
+ const r=practiceRound;if(r.locked)return;
+ if(ok){r.locked=true;$("practiceFeedback").innerHTML=`<div class="feedback good">정답이야! 🌟<br>${r.w.en} = ${r.w.ko}</div>`;if(button)button.classList.add("correct");$("practiceControls").innerHTML='<button class="btn green" onclick="nextPractice()">다음 문제 →</button>';return;}
+ r.attempts++;if(button)button.classList.add("wrong");
+ if(r.attempts===1){
+  if($("choices"))[...$("choices").children].forEach(b=>b.disabled=true);
+  if($("answerInput"))$("answerInput").disabled=true;
+  $("practiceFeedback").innerHTML='<div class="feedback bad">아쉽지만 괜찮아! 힌트를 보고 한 번 더 도전해 봐.</div>';
+  $("practiceControls").innerHTML='<button class="btn primary" onclick="practiceRetry()">한 번 더 도전</button>';
+ }else{
+  r.locked=true;$("practiceFeedback").innerHTML=`<div class="feedback bad">다시 확인해 보자.<br>정답: ${r.w.en} — ${r.w.ko}</div>`;
+  $("practiceControls").innerHTML='<button class="btn green" onclick="nextPractice()">다음 문제 →</button>';
+ }
+}
+function practiceRetry(){
+ const r=practiceRound;$("practiceFeedback").innerHTML="";
+ if($("choices"))[...$("choices").children].forEach(b=>{b.disabled=false;b.classList.remove("wrong");});
+ if($("answerInput")){$("answerInput").disabled=false;$("answerInput").value="";}
+ $("practiceControls").innerHTML='<button class="btn purple" onclick="practiceHint()">힌트 보기 (-10 🪙)</button>';
+ if($("answerInput")){$("practiceControls").innerHTML+='<button class="btn primary" id="submitPractice">정답 확인</button>';$("submitPractice").onclick=()=>checkPractice(norm($("answerInput").value)===norm(practiceDirection==="en"?r.w.ko:r.w.en));}
+}
+function practiceHint(){const r=practiceRound;if(!spend(10))return;r.hints++;const h=r.hints===1?r.w.hint:`첫 단어는 "${r.w.en.split(" ")[0]}" 이야.`;
+ $("practiceFeedback").innerHTML=`<div class="hintbox">💡 힌트 ${r.hints}: ${h}<br>힌트를 보고 다시 답해 봐!</div>`;
+ $("practiceControls").innerHTML='<button class="btn primary" onclick="practiceRetry()">한 번 더 도전</button>';
+}
+function renderMatch(){
+ const left=shuffle(WORDS),right=shuffle(WORDS);let selected=null;const matched=new Set();
+ $("practiceQuestion").innerHTML='<div class="question"><div class="question-label">MATCHING GAME</div><div class="prompt">영어와 한국어 뜻을 짝지어 봐!</div><div class="matchboard"><div class="matchcol" id="matchLeft"></div><div class="matchcol" id="matchRight"></div></div><p id="matchStatus" class="muted">찾은 짝: 0 / 6</p></div>';
+ left.forEach(w=>{const b=document.createElement("button");b.className="matchitem";b.textContent=w.en;b.onclick=()=>{if(matched.has(w.en))return;selected=w.en;document.querySelectorAll("#matchLeft button").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");};$("matchLeft").appendChild(b);});
+ right.forEach(w=>{const b=document.createElement("button");b.className="matchitem";b.textContent=w.ko;b.onclick=()=>{
+  if(matched.has(w.en))return;
+  if(!selected){toast("먼저 영어 표현을 선택해 줘!");return;}
+  if(selected===w.en){matched.add(w.en);document.querySelectorAll("#matchLeft button").forEach(x=>{if(x.textContent===w.en){x.classList.add("matched");x.disabled=true;}});b.classList.add("matched");b.disabled=true;$("matchStatus").textContent=`찾은 짝: ${matched.size} / 6`;selected=null;if(matched.size===6){$("practiceFeedback").innerHTML='<div class="feedback good">완벽해! 모든 짝을 찾았어! 🎉</div>';$("practiceControls").innerHTML='<button class="btn green" onclick="nextPractice()">다음 문제 →</button>';}}
+  else{toast("짝이 맞지 않아. 다시 생각해 봐!");}
+ };$("matchRight").appendChild(b);});
+}
+function nextPractice(){if(practiceIndex<practiceDeck.length-1){practiceIndex++;renderPractice();}else{$("practiceQuestion").innerHTML='<div class="result"><div class="emoji">🌟</div><h2>Practice Complete!</h2><p>6개 표현을 모두 연습했어!</p></div>';$("practiceFeedback").innerHTML="";$("practiceControls").innerHTML='<button class="btn primary" onclick="showStage(2)">Go to Final Challenge →</button>';}}
+function stopPractice(){$("practiceArea").classList.add("hidden");$("practiceSetup").classList.remove("hidden");}
+
+/* Final challenge: exactly six questions */
+function startTest(){testDeck=shuffle(WORDS);testIndex=0;testCorrect=0;testEarned=0;testReviews=[];$("testSetup").classList.add("hidden");$("testResult").classList.add("hidden");$("testArea").classList.remove("hidden");renderTest();}
+function renderTest(){
+ const w=testDeck[testIndex],kind=["mcq","type","reverse","sentence"][testIndex%4];
+ testRound={w,kind,attempts:0,hints:0,locked:false};
+ $("testCounter").textContent=`Question ${testIndex+1} / ${testDeck.length}`;$("testFeedback").innerHTML="";$("testControls").innerHTML="";
+ const box=$("testQuestion");
+ if(kind==="sentence"){
+  box.innerHTML=`<div class="question"><div class="question-label">SENTENCE COMPLETION</div><div class="prompt">${w.example.replace(w.en,"________")}</div><input id="testInput" placeholder="영어 표현 입력" autocomplete="off"></div>`;
+  $("testControls").innerHTML='<button class="btn primary" id="testSubmit">정답 확인</button>';
+  $("testSubmit").onclick=()=>checkTest(norm($("testInput").value)===norm(w.en));
+ }else if(kind==="type"){
+  box.innerHTML=`<div class="question"><div class="question-label">TYPE THE EXPRESSION</div><div class="prompt">${w.ko}</div><input id="testInput" placeholder="영어 표현 입력" autocomplete="off"></div>`;
+  $("testControls").innerHTML='<button class="btn primary" id="testSubmit">정답 확인</button>';
+  $("testSubmit").onclick=()=>checkTest(norm($("testInput").value)===norm(w.en));
+ }else{
+  const reverse=kind==="reverse";const correct=reverse?w.ko:w.en;
+  const options=shuffle([correct,...shuffle(WORDS.filter(x=>x!==w)).slice(0,3).map(x=>reverse?x.ko:x.en)]);
+  box.innerHTML=`<div class="question"><div class="question-label">MULTIPLE CHOICE</div><div class="prompt">${reverse?w.en:w.ko}</div><div id="testChoices" class="choice-list"></div></div>`;
+  options.forEach(opt=>{const b=document.createElement("button");b.className="choice";b.textContent=opt;b.onclick=()=>checkTest(norm(opt)===norm(correct),b);$("testChoices").appendChild(b);});
+ }
+ if($("testInput"))$("testInput").onkeydown=e=>{if(e.key==="Enter")$("testSubmit").click();};
+}
+function checkTest(ok,button){
+ const r=testRound;if(r.locked)return;
+ if(ok){r.locked=true;testCorrect++;testEarned+=50;earn(50);testReviews.push({w:r.w,ok:true});$("testFeedback").innerHTML=`<div class="feedback good">정답이야! 🪙 +50 coins<br>${r.w.en} = ${r.w.ko}</div>`;if(button)button.classList.add("correct");if($("testInput"))$("testInput").disabled=true;if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);$("testControls").innerHTML='<button class="btn green" onclick="nextTest()">다음 문제 →</button>';return;}
+ r.attempts++;if(button)button.classList.add("wrong");
+ if(r.attempts===1){$("testFeedback").innerHTML='<div class="feedback bad">아쉽지만 한 번 더 도전할 수 있어! 힌트를 활용해 봐.</div>';if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);if($("testInput"))$("testInput").disabled=true;$("testControls").innerHTML='<button class="btn primary" onclick="testRetry()">한 번 더 도전</button>';}
+ else{$("testFeedback").innerHTML='<div class="feedback bad">다시 틀렸어. 힌트를 더 확인하고 정답을 배워 보자.</div>';if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);if($("testInput"))$("testInput").disabled=true;$("testControls").innerHTML='<button class="btn purple" onclick="testHint()">추가 힌트 (-10 🪙)</button><button class="btn purple" onclick="revealTestAnswer()">정답 보기 (-10 🪙)</button><button class="btn green" onclick="nextTest()">다음 문제 →</button>';}
+}
+function testRetry(){const r=testRound;$("testFeedback").innerHTML="";if($("testChoices"))[...$("testChoices").children].forEach(b=>{b.disabled=false;b.classList.remove("wrong");});if($("testInput")){$("testInput").disabled=false;$("testInput").value="";$("testInput").focus();}$("testControls").innerHTML='<button class="btn purple" onclick="testHint()">힌트 보기 (-10 🪙)</button>';
+ if($("testInput")){$("testControls").innerHTML+='<button class="btn primary" id="testSubmit">정답 확인</button>';$("testSubmit").onclick=()=>checkTest(norm($("testInput").value)===norm(r.w.en));}}
+function testHint(){const r=testRound;if(!spend(10))return;r.hints++;const hint=r.hints===1?r.w.hint:`첫 단어는 "${r.w.en.split(" ")[0]}" 이야. 단어 수는 ${r.w.en.split(" ").length}개야.`;$("testFeedback").innerHTML=`<div class="hintbox">💡 힌트 ${r.hints}: ${hint}<br>힌트를 보고 다시 도전해 봐!</div>`;$("testControls").innerHTML='<button class="btn primary" onclick="testRetry()">한 번 더 도전</button><button class="btn purple" onclick="revealTestAnswer()">정답 보기 (-10 🪙)</button>';}
+function revealTestAnswer(){const r=testRound;if(!spend(10))return;r.locked=true;testReviews.push({w:r.w,ok:false});$("testFeedback").innerHTML=`<div class="feedback bad">정답을 확인했어.<br><b>${r.w.en} — ${r.w.ko}</b><br>${r.w.example}<br>${r.w.exampleKo}</div>`;if($("testInput"))$("testInput").disabled=true;if($("testChoices"))[...$("testChoices").children].forEach(b=>b.disabled=true);$("testControls").innerHTML='<button class="btn green" onclick="nextTest()">다음 문제 →</button>';}
+function nextTest(){if(testIndex<testDeck.length-1){testIndex++;renderTest();}else finishTest();}
+function finishTest(){$("testArea").classList.add("hidden");$("testResult").classList.remove("hidden");$("resultScore").textContent=`${testCorrect} / ${testDeck.length}`;$("earnedCoins").textContent=testEarned;$("resultEmoji").textContent=testCorrect===6?"🏆":testCorrect>=4?"🎉":"🌱";$("resultText").textContent=testCorrect===6?"완벽해! 모든 문제를 맞혔어!":testCorrect>=4?"정말 잘했어! 틀린 표현도 복습해 보자.":"수고했어! 학습 단계에서 다시 연습하고 도전해 봐.";$("testReview").innerHTML=testReviews.map((r,i)=>`<div class="glossary-item" style="margin:7px 0"><b>${r.ok?"✅":"❌"} ${i+1}. ${r.w.en}</b><br>${r.w.ko}<br><span class="muted">${r.w.example}</span></div>`).join("");}
+function stopTest(){$("testArea").classList.add("hidden");$("testSetup").classList.remove("hidden");}
+initGlossary();updatePet();showStage(0);
+</script>
+</body>
+</html>
